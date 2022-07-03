@@ -10,10 +10,11 @@ body {
 .cart-item {
   display: inline-flex;
   margin:  20px 20px;
+  border: 1px solid black;
 }
 
 .cart-item .right-block {
-  padding: 0 20px;
+  padding: 0px 20px;
 }
 .cart-item-actions {
   margin-top: 20px;
