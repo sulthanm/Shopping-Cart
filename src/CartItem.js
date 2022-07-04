@@ -1,15 +1,7 @@
 import React from 'react';
 
 class CartItem extends React.Component {
-    
-    constructor() {
-        super();
-        this.state = {
-            title : 'Phone',
-            price : 9999,
-            qty : 1
-        }
-    }
+
     increaseItem = () => {
         //Arrow function helps to bind the Cartitem state , 
         //simple nothing but now we can use state of CartItem component in increaseItem function, else we cannt.  
@@ -35,8 +27,10 @@ class CartItem extends React.Component {
             console.log('state', this.state); 
         }   
     } 
+
     render () {
-        const {title, price, qty} = this.state;
+        const {title, price, qty} = this.props.product;
+        console.log("measge");
         return (
             <div className='cart-item'>
                 <div className='left-block'>
