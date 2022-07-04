@@ -14,7 +14,7 @@ body {
 }
 
 .cart-item .right-block {
-  padding: 0px 20px;
+  padding: 5px 20px;
 }
 .cart-item-actions {
   margin-top: 20px;
@@ -27,4 +27,9 @@ body {
 
 .action-icons:hover {
   cursor: pointer;
+}
+
+.cart {
+  display: flex;
+  flex-direction: column;
 }
