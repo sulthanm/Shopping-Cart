@@ -12,8 +12,28 @@ class CartItem extends React.Component {
     }
     increaseItem = () => {
         //Arrow function helps to bind the Cartitem state , 
-        //simple nothing but we can use state of CartItem component in increaseItem function, else we cannt.  
+        //simple nothing but now we can use state of CartItem component in increaseItem function, else we cannt.  
+        // form - 1 :
+        // this.setState({
+        //     qty : this.state.qty + 1
+        // })
+        // form - 2 :
+        this.setState( (previousState) => {
+            return {
+                qty : previousState.qty + 1
+            }
+        });
         console.log('state', this.state);    
+    } 
+    decreaseItem = () => {
+        if (this.state.qty > 1) {
+            this.setState( (previousState) => {
+                return {
+                    qty : previousState.qty - 1
+                }
+            });
+            console.log('state', this.state); 
+        }   
     } 
     render () {
         const {title, price, qty} = this.state;
@@ -31,12 +51,13 @@ class CartItem extends React.Component {
                             alt='decrease' 
                             className='action-icons' 
                             src='https://cdn-icons-png.flaticon.com/512/929/929430.png' 
-                            onClick={this.increaseItem}
+                            onClick={ this.decreaseItem }
                         />
                         <img 
                             alt='increase' 
                             className='action-icons' 
                             src='https://cdn-icons.flaticon.com/png/512/4210/premium/4210903.png?token=exp=1656855830~hmac=e2edf8f1d2f75c5f40dbe36a81c2e95b' 
+                            onClick={this.increaseItem}
                         />
                         <img 
                             alt='delete' 
