@@ -1,81 +1,23 @@
 import React from 'react';
 import CartItem from './CartItem';
 
-class Cart extends React.Component {
+const Cart = (props) => {
 
-    constructor() {
-        super();
-        this.state = {
-            products : [
-                {
-                    title : 'Phone',
-                    price : 19999,
-                    qty : 1,
-                    key : 1
-                },
-                {
-                    title : 'Laptop',
-                    price : 70000,
-                    qty : 1,
-                    key : 2
-                },
-                {
-                    title : 'Watch',
-                    price : 5000,
-                    qty : 1,
-                    key : 3
-                },
-            ]
-        }
-    }
-    handleIncreaseQty = (product) =>{
-        const products = this.state.products; 
-        const index = products.indexOf(product);
-        const item = products[index];
-        
-        item.qty = item.qty + 1;
-        this.setState({
-            products : products
-        });
-    }
-    handleDecreaseQty = (product) =>{
-        const products = this.state.products; 
-        const index = products.indexOf(product);
-        const item = products[index];
-        if (item.qty >= 1) {
-            item.qty = item.qty - 1;
-            this.setState({
-                products : products
-            });
-        }
-        
-    }
-    handleDelete = (id) => {
-        const {products} = this.state;
-        const items = products.filter((item) => item.key !== id);
-        console.log(items);
-        this.setState({
-            products : items
-        })
-    }
-    render() {
         return(
             <div className='cart'>
-                <div>Cart</div>
-                {this.state.products.map((item) => {
+                {props.products.map((item) => {
                     return <CartItem 
                             product ={item} 
                             key = {item.key} 
-                            incQty = {this.handleIncreaseQty} 
-                            decQty = {this.handleDecreaseQty}
-                            deleteProduct = {this.handleDelete}
+                            incQty = {props.incQty} 
+                            decQty = {props.decQty}
+                            deleteProduct = {props.deleteProduct}
                             />
                 })}
                 
             </div> 
             
         )
-    }
 }
 
 export default Cart;
