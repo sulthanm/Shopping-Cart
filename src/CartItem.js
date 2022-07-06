@@ -12,7 +12,7 @@ const CartItem = (props) => {
         return (
             <div className='cart-item'>
                 <div className='left-block'>
-                    <img style={styles.image} /> 
+                    <img  className='product-image' src={product.img} /> 
                 </div>
                 <div className='right-block'>
                     <div style={ {fontSize : 25} }>{ title }</div>
@@ -20,17 +20,17 @@ const CartItem = (props) => {
                     <div style={ {fontSize : '#777'} } >Qty : { qty }</div>
                     <div className='cart-item-actions'>
                         <img 
+                            alt='increase' 
+                            className='action-icons' 
+                            src='https://cdn-icons.flaticon.com/png/512/4210/premium/4210903.png?token=exp=1656855830~hmac=e2edf8f1d2f75c5f40dbe36a81c2e95b' 
+                            onClick={ () => incQty(product) }
+                        />
+                        <img 
                             alt='decrease' 
                             className='action-icons' 
                             src='https://cdn-icons-png.flaticon.com/512/929/929430.png' 
                             onClick={ () => decQty(product) }
 
-                        />
-                        <img 
-                            alt='increase' 
-                            className='action-icons' 
-                            src='https://cdn-icons.flaticon.com/png/512/4210/premium/4210903.png?token=exp=1656855830~hmac=e2edf8f1d2f75c5f40dbe36a81c2e95b' 
-                            onClick={ () => incQty(product) }
                         />
                         <img 
                             alt='delete' 
@@ -43,14 +43,5 @@ const CartItem = (props) => {
             </div>
         );
     }
-
-const styles = {
-    image: {
-        height : 150,
-        width : 150,
-        borderRadius : 5,
-        background : '#ccc'
-    }
-}
 
 export default CartItem;
