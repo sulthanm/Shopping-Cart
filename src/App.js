@@ -1,79 +1,119 @@
 import React from 'react';
 import Cart from './Cart';
 import Navbar from './Navbar';
+import  firebase from 'firebase/compat/app';
 
 class App extends React.Component {
     constructor() {
       super();
       this.state = {
-          products : [
-              {
-                  title : 'IPhone',
-                  price : 100000,
-                  qty : 1,
-                  img : 'https://images.unsplash.com/photo-1512054502232-10a0a035d672?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80',
-                  key : 1
-              },
-              {
-                  title : 'Laptop',
-                  price : 70000,
-                  qty : 1,
-                  img : 'https://m.media-amazon.com/images/I/718ETwvLVOL._SL1500_.jpg',
-                  key : 2
-              },
-              {
-                  title : 'Watch',
-                  price : 5000,
-                  qty : 1,
-                  img : 'https://media.istockphoto.com/photos/a-silver-stainless-steel-analog-watch-picture-id1368179045?s=612x612',
-                  key : 3
-              },
-              {
-                title : 'Camera',
-                price : 50000,
-                qty : 1,
-                img : 'https://images.unsplash.com/photo-1615048234151-6bcbca4043c4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=436&q=80',
-                key : 4
-              },
-              {
-                title : 'Mouse',
-                price : 1000,
-                qty : 1,
-                img : 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=465&q=80',
-                key : 5
-              }
-          ]
+          products : [],
+          loading : true
       }
-  }
- 
+    }
+    componentDidMount () {
+      // firebase
+      //   .firestore()
+      //   .collection('products')
+      //   .get()
+      //   .then((snapshot) => {
+      //     console.log(snapshot);
+      //     snapshot.docs.map((doc) => {
+      //       console.log(doc.data());
+            
+      //     })
+      //     const products = snapshot.docs.map((doc) => {
+      //       const data = doc.data();
+      //       data['id'] = doc.id;
+      //       return data;
+      //     });
+      //     this.setState({
+      //       products,
+      //       loading : false  
+      //     })
+      //   })
+
+      firebase
+        .firestore()
+        .collection('products')
+        .onSnapshot((snapshot) => {  //onsnapshot is called whenever there is change in firebasese
+          console.log(snapshot);
+          snapshot.docs.map((doc) => {
+            console.log(doc.data());
+            
+          })
+          const products = snapshot.docs.map((doc) => {
+            const data = doc.data();
+            data['id'] = doc.id;
+            return data;
+          });
+          this.setState({
+            products,
+            loading : false  
+          })
+        })
+    }
+
+    
+
     handleIncreaseQty =  (product) => {
         const products = this.state.products; 
         const index = products.indexOf(product);
-        const item = products[index];
-        
-        item.qty = item.qty + 1;
-        this.setState({
-            products : products
-        });
+        // const item = products[index];
+        // item.qty = item.qty + 1;
+        // this.setState({
+        //     products : products
+            
+        // });
+
+        const docRef = firebase.firestore().collection('products').doc(products[index].id);
+
+        docRef
+        .update({
+            qty : products[index].qty + 1
+          })
+          .then( () => {
+            console.log('Updated Successfully')
+          })
+          .catch((error)=> {
+            console.log('Error', error);
+          })
+
     }
     handleDecreaseQty = (product) =>{
         const products = this.state.products; 
         const index = products.indexOf(product);
-        const item = products[index];
-        if (item.qty >= 1) {
-            item.qty = item.qty - 1;
-            this.setState({
-                products : products
-            });
-        }
+        // const item = products[index];
+        // if (item.qty >= 1) {
+        //     item.qty = item.qty - 1;
+        //     this.setState({
+        //         products : products
+        //     });
+        // }
         
+        const docRef = firebase.firestore().collection('products').doc(products[index].id);
+
+        docRef
+        .update({
+            qty : products[index].qty - 1
+          })
+          .then( () => {
+            console.log('Updated Successfully')
+          })
+          .catch((error)=> {
+            console.log('Error', error);
+          })
+
     }
     handleDelete = (id) => {
-        const {products} = this.state;
-        const items = products.filter((item) => item.key !== id);
-        console.log(items);
-        this.setState({
-            products : items
+      const docRef = firebase.firestore().collection('products').doc(id);
+      docRef
+        .delete()
+        .then(()=> {
+          console.log("Deleted product");
+        })
+        .catch((error) => {
+          console.log("Error in deleting product", error);
         })
     }
     getCartCount = () => {
@@ -95,17 +135,38 @@ class App extends React.Component {
       return count;
     } 
     
+    addProduct = () => {
+      firebase
+        .firestore()
+        .collection('products')
+        .add({
+          img : '',
+          price : 700,
+          qty : 5,
+          title : 'Fridge'
+        })
+        .then((docRef) => {
+          console.log('Product has been added', docRef);
+        })
+        .catch( (error) => {
+          console.log('Error', error);
+        })  
+
+    }
+
     render () {
       return (
         <div className="App">
           <Navbar cartCount = {this.getCartCount()} />
+          <button onClick={this.addProduct} style={styles.addButton} > Add Product </button>
           <Cart 
             products = {this.state.products} 
             incQty = {this.handleIncreaseQty}
             decQty = {this.handleDecreaseQty}
             deleteProduct = {this.handleDelete}
-            />
-          <div style={styles} > 
+          />
+          {this.state.loading && <h3>Loading Products..</h3> }
+          <div style={styles.footer} > 
             <span>Total</span> 
             <span>({this.getCartCount()} items)</span> 
             <span>: Rs. {this.getCartPriceTotal()} </span>
@@ -117,10 +178,19 @@ class App extends React.Component {
 }
 
 const styles = {
-  fontSize : 20,
-  padding : 10,
-  background : '#ccc',
-  textAlign : 'center'
+  addButton : {
+    padding : 20,
+    fontSize : 20
+  },
+  footer : {
+    fontSize : 20,
+    padding : 10,
+    background : '#ccc',
+    textAlign : 'center',
+    position : 'fixed',
+    bottom : 0,
+    width : '100%'
+  }
 }
 
 export default App;
